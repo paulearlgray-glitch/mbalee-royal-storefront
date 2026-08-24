@@ -10,7 +10,7 @@ function money(m: { amount: string; currencyCode: string }) {
 
 export function CartButton() {
   const { cart, setOpen } = useCart();
-  return <button className="cart-button" onClick={() => setOpen(true)} aria-label="Open cart">Bag <span>{cart?.totalQuantity || 0}</span></button>;
+  return <button className="cart-button" onClick={() => setOpen(true)} aria-label="Open shopping bag"><span className="cart-label">Bag</span><span className="cart-count">{cart?.totalQuantity || 0}</span></button>;
 }
 
 export default function CartDrawer() {
@@ -19,19 +19,19 @@ export default function CartDrawer() {
   return (
     <div className="cart-backdrop" onClick={() => setOpen(false)}>
       <aside className="cart-drawer" onClick={e => e.stopPropagation()}>
-        <div className="cart-head"><strong>Your bag</strong><button onClick={() => setOpen(false)}>Close</button></div>
-        {!cart?.lines?.nodes?.length ? <p className="empty">Your bag is empty.</p> : <>
+        <div className="cart-head"><div><small>MBALEE ROYAL</small><strong>Your bag</strong></div><button onClick={() => setOpen(false)} aria-label="Close cart">×</button></div>
+        {!cart?.lines?.nodes?.length ? <div className="empty-cart"><span>0 items</span><h3>Your bag is waiting.</h3><p>Start with the latest iPhones or Mbalee's curated accessories.</p><Link href="/shop" onClick={() => setOpen(false)}>Shop the drop ↗</Link></div> : <>
           <div className="cart-lines">{cart.lines.nodes.map((line: any) => {
             const v = line.merchandise; const img = v.product.featuredImage;
             return <div className="cart-line" key={line.id}>
-              {img && <Image src={img.url} alt={img.altText || v.product.title} width={72} height={72} />}
-              <div><Link href={`/products/${v.product.handle}`}>{v.product.title}</Link><small>{v.title !== 'Default Title' ? v.title : ''}</small><small>Qty {line.quantity}</small></div>
+              <div className="cart-thumb">{img && <Image src={img.url} alt={img.altText || v.product.title} width={84} height={84} />}</div>
+              <div><Link href={`/products/${v.product.handle}`} onClick={() => setOpen(false)}>{v.product.title}</Link><small>{v.title !== 'Default Title' ? v.title : ''}</small><small>Quantity {line.quantity}</small></div>
               <strong>{money(v.price)}</strong>
             </div>;
           })}</div>
-          <div className="cart-total"><span>Total</span><strong>{money(cart.cost.totalAmount)}</strong></div>
-          <a className="checkout" href={cart.checkoutUrl}>Secure checkout</a>
-          <p className="checkout-note">Payment is completed securely through Shopify checkout.</p>
+          <div className="cart-summary"><div className="cart-total"><span>Total</span><strong>{money(cart.cost.totalAmount)}</strong></div><p>Taxes and delivery are calculated in Shopify checkout where applicable.</p></div>
+          <a className="checkout" href={cart.checkoutUrl}>Secure checkout <span>↗</span></a>
+          <p className="checkout-note">Checkout powered securely by Shopify.</p>
         </>}
       </aside>
     </div>
